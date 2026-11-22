@@ -31,6 +31,7 @@ impl SessionLockHandler for State {
         }
 
         let ext_session_lock = locker.ext_session_lock().clone();
+        self.common.dbus_state.cancel_window_switcher();
         locker.lock();
         shell.session_lock = Some(SessionLock {
             ext_session_lock,

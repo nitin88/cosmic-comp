@@ -1042,7 +1042,14 @@ impl State {
 
             // Gets the configured command for a given system action.
             Action::System(system) => {
-                if let Some(command) = self.common.config.system_actions.get(&system) {
+                if let Some(command) = self.common.config.system_actions.get(&system)
+                    && !self.common.dbus_state.window_switcher_step(
+                        seat.name(),
+                        &pattern,
+                        &system,
+                        command,
+                    )
+                {
                     self.spawn_command(command.clone());
                 }
             }

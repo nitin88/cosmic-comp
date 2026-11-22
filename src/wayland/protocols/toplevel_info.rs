@@ -429,15 +429,26 @@ where
             }
         });
 
-        if !dirty && self.last_dirty {
+        if !dirty {
+            self.finish_pending();
+        }
+        self.last_dirty = dirty;
+    }
+
+    /// Send the new focus state before the client's next display sync.
+    pub(crate) fn refresh_after_activation(&mut self, workspace_state: &WorkspaceState<D>) {
+        self.refresh(workspace_state);
+        self.finish_pending();
+    }
+
+    fn finish_pending(&mut self) {
+        if std::mem::take(&mut self.last_dirty) {
             for instance in &self.instances {
                 if instance.version() >= zcosmic_toplevel_info_v1::EVT_DONE_SINCE {
                     instance.done();
                 }
             }
         }
-
-        self.last_dirty = dirty;
     }
 
     pub fn global_id(&self) -> GlobalId {

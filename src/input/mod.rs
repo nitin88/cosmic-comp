@@ -2392,6 +2392,12 @@ impl State {
             })
         });
 
+        self.common.dbus_state.window_switcher_input(
+            seat.name(),
+            modifiers,
+            shortcuts_inhibited || (key_state == KeyState::Pressed && key_matches(Keysym::Escape)),
+        );
+
         if let Some(a11y_keyboard_monitor) = self.common.dbus_state.a11y_keyboard_monitor() {
             a11y_keyboard_monitor.key_event(modifiers, &handle, key_state);
         }

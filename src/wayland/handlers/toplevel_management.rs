@@ -135,6 +135,9 @@ impl ToplevelManagementHandler for State {
             }
 
             Shell::set_focus(self, Some(&target), &seat, None, false);
+            self.common
+                .toplevel_info_state
+                .refresh_after_activation(&self.common.workspace_state);
             return;
         }
     }

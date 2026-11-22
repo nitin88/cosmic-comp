@@ -20,6 +20,7 @@ pub mod ei;
 pub mod logind;
 mod name_owners;
 mod power;
+mod window_switcher;
 
 #[derive(Clone, Debug)]
 pub struct DBusState(Rc<DBusStateInner>);
@@ -30,6 +31,7 @@ struct DBusStateInner {
     executor: calloop::futures::Scheduler<()>,
     session_conn: zbus::Result<zbus::Connection>,
     system_conn: zbus::Result<zbus::Connection>,
+    switcher: RefCell<window_switcher::WindowSwitcher>,
     a11y_keyboard_monitor: RefCell<Option<a11y_keyboard_monitor::A11yKeyboardMonitorState>>,
     ei_state: RefCell<Option<ei::EiState>>,
     ei_sender: Arc<Mutex<Option<calloop::channel::Sender<crate::libei::EiRequest>>>>,
@@ -45,6 +47,7 @@ impl DBusState {
             executor,
             session_conn,
             system_conn,
+            switcher: RefCell::default(),
             a11y_keyboard_monitor: RefCell::new(None),
             ei_state: RefCell::new(None),
             ei_sender: Arc::new(Mutex::new(None)),
